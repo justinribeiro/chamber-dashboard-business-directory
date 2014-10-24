@@ -403,9 +403,9 @@ function cdash_single_business($content) {
 				$i = 1;
 				foreach($buscats as $buscat) {
 					if($i !== 1) {
-						$business_content .= ",&nbsp;";
+						$business_content .= ", ";
 					}
-					$business_content .= $buscat->name;
+					$business_content .= "<a href='/business_category/" . $buscat->slug . "'>" . $buscat->name . "</a>";
 					$i++;
 				}
 			}
@@ -686,9 +686,9 @@ function cdash_taxonomy_filter($content) {
 				$i = 1;
 				foreach($buscats as $buscat) {
 					if($i !== 1) {
-						$tax_content .= ",&nbsp;";
+						$tax_content .= ", ";
 					}
-					$tax_content .= $buscat->name;
+					$tax_content .= "<a href='/business_category/" . $buscat->slug . "'>" . $buscat->name . "</a>";
 					$i++;
 				}
 			}
@@ -864,7 +864,13 @@ function cdash_business_directory_shortcode( $atts ) {
 			  	if($display !== '') {
 			  		global $buscontact_metabox;
 					$contactmeta = $buscontact_metabox->the_meta();
-				  	$locations = $contactmeta['location'];
+
+            if(isset($contactmeta['location'])) {
+              $locations = $contactmeta['location'];
+            } else {
+              $locations = array();
+            }
+
 					foreach($locations as $location) {
 						if(isset($location['donotdisplay']) && $location['donotdisplay'] == "1") {
 							continue;
@@ -926,18 +932,24 @@ function cdash_business_directory_shortcode( $atts ) {
 					  		$business_list .= "<p class='website'><a href='" . $location['url'] . "' target='_blank'>" . $location['url'] . "</a></p>";
 					  	} 
 			  		}
-			  		if(in_array("category", $displayopts)) {
-						$id = get_the_id();
-						$buscats = get_the_terms( $id, 'business_category');
-						$business_list .= "<p class='categories'><span>" . __('Categories:', 'cdash') . "</span>&nbsp;";
-						$i = 1;
-						foreach($buscats as $buscat) {
-							if($i !== 1) {
-								$business_list .= ",&nbsp;";
-							}
-							$business_list .= $buscat->name;
-							$i++;
-						}
+			  		if(true) {
+  						$id = get_the_id();
+              //print_r($id);
+  						$buscats = get_the_terms( $id, 'business_category');
+              //print_r($buscats);
+  						$business_list .= "<p class='categories'><span>Categories:</span>&nbsp;";
+  						//print_r($business_list);
+              if (is_array($buscats) && count($buscats) > 0) {
+                $i = 1;
+                foreach($buscats as $buscat) {
+                  if($i !== 1) {
+                    $business_list .= ", ";
+                  }
+                  $business_list .= "<a href='/business_category/" . $buscat->slug . "'>" . $buscat->name . "</a>";
+                  $i++;
+                }
+              }
+
 				  	}
 				  	if(in_array("level", $displayopts)) {
 						$id = get_the_id();
@@ -1217,9 +1229,9 @@ function cdash_business_search_shortcode() {
 						$i = 1;
 						foreach($buscats as $buscat) {
 							if($i !== 1) {
-								$business_search .= ",&nbsp;";
+								$business_search .= ", ";
 							}
-							$business_search .= $buscat->name;
+							$business_search .= "<a href='/business_category/" . $buscat->slug . "'>" . $buscat->name . "</a>";
 							$i++;
 						}
 					}
