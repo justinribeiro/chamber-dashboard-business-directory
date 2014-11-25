@@ -1360,6 +1360,37 @@ function cdash_business_search_shortcode() {
 }
 add_shortcode( 'business_search', 'cdash_business_search_shortcode' );
 
+
+function cdash_business_categories_shortcode( $atts ) {
+  // Set our default attributes
+  extract( shortcode_atts(
+    array(
+      'orderby' => 'name', // options: date, modified, menu_order, rand
+      'showcount' => 0,
+      'padcounts' => 0,
+      'hierarchical' => 1,
+      'title' => ''
+    ), $atts )
+  );
+
+  $taxonomy     = 'business_category';
+
+  $args = array(
+    'taxonomy'     => $taxonomy,
+    'orderby'      => $orderby,
+    'show_count'   => $showcount,
+    'pad_counts'   => $padcounts,
+    'hierarchical' => $hierarchical,
+    'title_li'     => $title
+  );
+  
+  echo '<ul class="business-categories">';
+  wp_list_categories($args);
+  echo '</ul>';
+}
+add_shortcode( 'business_categories', 'cdash_business_categories_shortcode' );
+
+
 // ------------------------------------------------------------------------
 // Business Category shortcode = [business_categories]
 // Thanks to https://github.com/justinribeiro/chamber-dashboard-business-directory/blob/add-category-shortcode/cdash-business-directory.php
